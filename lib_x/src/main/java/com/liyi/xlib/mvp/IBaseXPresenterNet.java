@@ -1,7 +1,7 @@
 package com.liyi.xlib.mvp;
 
 
-public interface IBaseXPresenterNet {
+public interface IBaseXPresenterNet extends IBaseXPresenter{
 
     /**
      * 取消网络请求

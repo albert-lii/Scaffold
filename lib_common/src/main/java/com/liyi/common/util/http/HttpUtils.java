@@ -13,8 +13,7 @@ public class HttpUtils {
 
     private static void checkNotNull() {
         if (sApiService == null) {
-            // 初始化 Retrofit，设置域名
-            CallServer.getInstance().createRetrofit(Utils.getApp(), "");
+            CallServer.getInstance().init(Utils.getApp(), "");
             sApiService = CallServer.getInstance().createService(ApiService.class);
         }
     }

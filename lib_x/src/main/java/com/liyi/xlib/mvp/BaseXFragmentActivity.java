@@ -1,9 +1,8 @@
 package com.liyi.xlib.mvp;
 
-import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 
-public abstract class BaseXFragmentActivity<P extends IBaseXPresenter> extends FragmentActivity implements IBaseXView{
+public abstract class BaseXFragmentActivity<P extends IBaseXPresenter> extends FragmentActivity implements IBaseXView {
     private P mPresenter;
 
     public abstract P onBindPresenter();
@@ -16,7 +15,7 @@ public abstract class BaseXFragmentActivity<P extends IBaseXPresenter> extends F
     }
 
     @Override
-    public Context getSelfContext() {
+    public FragmentActivity getSelfActivity() {
         return this;
     }
 

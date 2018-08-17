@@ -1,12 +1,16 @@
 package com.liyi.xlib.mvp;
 
 import android.app.Activity;
-import android.content.Context;
 
 
 public abstract class BaseXActivity<P extends IBaseXPresenter> extends Activity implements IBaseXView {
     private P mPresenter;
 
+    /**
+     * 绑定 Presenter
+     *
+     * @return
+     */
     public abstract P onBindPresenter();
 
     public P getPresenter() {
@@ -17,7 +21,7 @@ public abstract class BaseXActivity<P extends IBaseXPresenter> extends Activity 
     }
 
     @Override
-    public Context getSelfContext() {
+    public Activity getSelfActivity() {
         return this;
     }
 

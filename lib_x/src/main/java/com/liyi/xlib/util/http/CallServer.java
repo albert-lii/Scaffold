@@ -18,7 +18,8 @@ public class CallServer {
     // 订阅统一管理类
     private static HashMap<Object, HttpObserver> sDisposableSite;
     // Retrofit2.0 客户端
-    private static Retrofit sRetrofit;
+    private static RetrofitClient sRetrofitClient;
+
 
     private CallServer() {
         sDisposableSite = new HashMap<>();
@@ -36,13 +37,23 @@ public class CallServer {
     }
 
     /**
-     * 设置域名
+     * 初始化
      *
-     * @param baseUrl
      * @param context
      */
-    public void createRetrofit(@NonNull Context context, @NonNull String baseUrl) {
-        sRetrofit = new RetrofitClient().getRetrofit(context, baseUrl);
+    public void init(@NonNull Context context, String baseUrl) {
+        sRetrofitClient = new RetrofitClient(context);
+        sRetrofitClient.setBaseUrl(baseUrl);
+    }
+
+    public void init(@NonNull Context context, String urlKey, Map<String, String> hostMap) {
+        sRetrofitClient = new RetrofitClient(context);
+        sRetrofitClient.setBaseUrls(urlKey, hostMap);
+    }
+
+    public void init(@NonNull Context context, Retrofit retrofit) {
+        sRetrofitClient = new RetrofitClient(context);
+        sRetrofitClient.setRetrofit(retrofit);
     }
 
     /**
@@ -53,10 +64,10 @@ public class CallServer {
      * @return
      */
     public <T> T createService(@NonNull Class<T> cls) {
-        if (sRetrofit == null) {
-            throw new NullPointerException("Please initialize sRetrofit first...");
+        if (sRetrofitClient == null) {
+            throw new NullPointerException("Please initialize RetrofitClient first...");
         }
-        return sRetrofit.create(cls);
+        return sRetrofitClient.getRetrofit().create(cls);
     }
 
     /**
@@ -88,24 +99,9 @@ public class CallServer {
         Object tag = observer.getTag();
         // 如果已经存在相同的请求，则先取消原来的请求，再将新的请求加入管理类
         if (sDisposableSite.containsKey(tag)) {
-            remove(tag);
+            cancel(tag);
         }
         sDisposableSite.put(tag, observer);
-    }
-
-    /**
-     * 移除指定的订阅关系
-     *
-     * @param tag
-     */
-    public void remove(Object tag) {
-        if (tag != null && sDisposableSite != null && !sDisposableSite.isEmpty()) {
-            HttpObserver disposable = sDisposableSite.get(tag);
-            if (disposable != null) {
-                disposable.cancel();
-            }
-            sDisposableSite.remove(tag);
-        }
     }
 
     /**
@@ -119,6 +115,7 @@ public class CallServer {
             if (disposable != null) {
                 disposable.cancel();
             }
+            sDisposableSite.remove(tag);
         }
     }
 

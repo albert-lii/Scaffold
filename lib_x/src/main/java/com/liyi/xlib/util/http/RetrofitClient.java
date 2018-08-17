@@ -2,67 +2,124 @@ package com.liyi.xlib.util.http;
 
 import android.content.Context;
 
-import io.reactivex.annotations.NonNull;
+import com.liyi.xlib.BuildConfig;
+import com.liyi.xlib.util.http.interceptor.BaseUrlInterceptor;
+import com.liyi.xlib.util.http.interceptor.LoggingInterceptor;
+import com.liyi.xlib.util.http.interceptor.OfflineCacheControlInterceptor;
+
+import java.io.File;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Retrofit2.0 配置类
  */
 public class RetrofitClient {
+    // 默认的超时时间
+    private static final int DEF_TIMEOUT_CONNECT = 25;
+    private static final int DEF_TIMEOUT_READ = 25;
+    private static final int DEF_TIMEOUT_WRITE = 25;
+    // 默认的最大缓存空间
+    private static final int DEF_CACHE_MAX_SIZE = 10 * 1024 * 1024;
+    // 默认的缓存文件夹的名字
+    private static final String DEF_CACHE_DIR_NAME = "ReClientCache";
 
-    public RetrofitClient() {
+    // 域名
+    private String mBaseUrl;
+    // 多个域名时，在 Header 中设置的标识 Key
+    private String mUrlKey;
+    // 用于具有多个 BaseUrl 时，在代码中动态更改 BaseUrl
+    private Map<String, String> mHostMap;
+    private Retrofit mRetrofit;
+    private Context mContext;
 
+    public RetrofitClient(Context context) {
+        this.mContext = context.getApplicationContext();
     }
 
     /**
-     * 使用默认的 OkHttpClient
+     * 设置域名
      *
-     * @param context
-     * @return
+     * @param url
      */
-    public Retrofit.Builder getRetrofitBuilder(@NonNull Context context) {
-        final Retrofit.Builder builder = new Retrofit.Builder()
-                // 设置 OkHttpClient
-                .client(new OkHttpConfig(context.getApplicationContext()).getOkHttpClient());
-        return builder;
+    public void setBaseUrl(String url) {
+        this.mBaseUrl = url;
     }
 
     /**
-     * 使用自定义 OkHttpClient
+     * 设置多个域名
      *
-     * @param okHttpClient
-     * @return
+     * @param hostMap
      */
-    public Retrofit.Builder getRetrofitBuilder(@NonNull OkHttpClient okHttpClient) {
-        final Retrofit.Builder builder = new Retrofit.Builder()
-                // 设置 OkHttpClient
-                .client(okHttpClient);
-        return builder;
+    public void setBaseUrls(String urlKey, Map<String, String> hostMap) {
+        this.mUrlKey = urlKey;
+        this.mHostMap = hostMap;
     }
 
-    private Retrofit.Builder configRetrofitBuilder(Retrofit.Builder builder) {
-        // 添加 String 转换器
-        builder.addConverterFactory(ScalarsConverterFactory.create())
+    /**
+     * 设置 Retrofit
+     *
+     * @param retrofit
+     */
+    public void setRetrofit(Retrofit retrofit) {
+        this.mRetrofit = retrofit;
+    }
+
+    public Retrofit getRetrofit() {
+        if (mRetrofit == null) {
+            mRetrofit = getDefaultRetrofit();
+        }
+        return mRetrofit;
+    }
+
+    /**
+     * 获取默认的 Retrofit
+     */
+    private Retrofit getDefaultRetrofit() {
+        return new Retrofit.Builder()
+                .baseUrl(mBaseUrl)
+                .client(createOkHttpClient())
+                // 添加 String 转换器
+//                .addConverterFactory(ScalarsConverterFactory.create())
                 // 添加 Gson 转化器
                 .addConverterFactory(GsonConverterFactory.create())
                 // 配合 RxJava2 使用
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
-        return builder;
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
     }
 
-    public Retrofit getRetrofit(@NonNull Context context, String baseUrl) {
-        final Retrofit.Builder builder = getRetrofitBuilder(context);
-        configRetrofitBuilder(builder);
-        return builder.baseUrl(baseUrl).build();
-    }
-
-    public Retrofit getRetrofit(@NonNull OkHttpClient okHttpClient, String baseUrl) {
-        final Retrofit.Builder builder = getRetrofitBuilder(okHttpClient);
-        configRetrofitBuilder(builder);
-        return builder.baseUrl(baseUrl).build();
+    /**
+     * 创建默认的 OkHttpClient
+     */
+    private OkHttpClient createOkHttpClient() {
+        // 缓存目录
+        File cacheDir = new File(mContext.getCacheDir(), DEF_CACHE_DIR_NAME);
+        Cache cache = new Cache(cacheDir, DEF_CACHE_MAX_SIZE);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                // 超时时间
+                .connectTimeout(DEF_TIMEOUT_CONNECT, TimeUnit.SECONDS)
+                .readTimeout(DEF_TIMEOUT_READ, TimeUnit.SECONDS)
+                .writeTimeout(DEF_TIMEOUT_WRITE, TimeUnit.SECONDS)
+                // 失败重连
+                .retryOnConnectionFailure(true)
+                // 添加离线缓存
+                .addNetworkInterceptor(new OfflineCacheControlInterceptor(mContext))
+                // 设置缓存路径
+                .cache(cache);
+        // 当有多个域名需求时添加
+        if (mHostMap != null && !mHostMap.isEmpty()) {
+            builder.addInterceptor(new BaseUrlInterceptor(mUrlKey, mHostMap));
+        }
+        // 调试模式下，添加日志打印
+        if (BuildConfig.DEBUG) {
+            builder.addInterceptor(new LoggingInterceptor());
+        }
+        return builder.build();
     }
 }

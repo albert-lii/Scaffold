@@ -1,7 +1,7 @@
 package com.liyi.xlib.mvp;
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
@@ -19,7 +19,7 @@ public abstract class BaseXFragment<P extends IBaseXPresenter> extends Fragment 
     }
 
     @Override
-    public Context getSelfContext() {
+    public Activity getSelfActivity() {
         return getActivity();
     }
 

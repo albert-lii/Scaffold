@@ -1,14 +1,14 @@
 package com.liyi.xlib.mvp;
 
 
-import android.content.Context;
+import android.app.Activity;
 
 public interface IBaseXView {
 
     /**
-     * 获取上下文对象
+     * 获取 Activity 对象
      *
-     * @return context
+     * @return activity
      */
-    Context getSelfContext();
+    <T extends Activity> T getSelfActivity();
 }

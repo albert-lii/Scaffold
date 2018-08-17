@@ -6,6 +6,9 @@ import java.lang.ref.WeakReference;
 
 
 public class BaseXPresenter<V extends IBaseXView> implements IBaseXPresenter {
+    /**
+     * 防止 Activity 不走 onDestory() 方法，所以采用弱引用来防止内存泄漏
+     */
     private WeakReference<V> mViewRef;
 
     public BaseXPresenter(@NonNull V view) {

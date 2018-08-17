@@ -1,6 +1,5 @@
 package com.liyi.xlib.mvp;
 
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 
 public abstract class BaseXAppcompatActivity<P extends IBaseXPresenter> extends AppCompatActivity implements IBaseXView  {
@@ -16,7 +15,7 @@ public abstract class BaseXAppcompatActivity<P extends IBaseXPresenter> extends 
     }
 
     @Override
-    public Context getSelfContext() {
+    public AppCompatActivity getSelfActivity() {
         return this;
     }
 
