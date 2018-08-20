@@ -7,19 +7,19 @@ import com.liyi.xlib.util.http.exception.ExceptionHandler;
 import io.reactivex.observers.DisposableObserver;
 
 /**
- * Retrofit2.0 中使用的观察者基类
+ * Retrofit2.0 中的网络请求响应基类
  */
-public class HttpObserver<T> extends DisposableObserver<T> {
+public class HttpResponse<T> extends DisposableObserver<T> {
     // 请求标记
     private Object mTag;
     // 网路请求响应监听
     private HttpResponseListener<T> mResponseListener;
 
-    public HttpObserver(HttpResponseListener<T> listener) {
+    public HttpResponse(HttpResponseListener<T> listener) {
         this.mResponseListener = listener;
     }
 
-    public HttpObserver(@NonNull Object tag, HttpResponseListener<T> listener) {
+    public HttpResponse(@NonNull Object tag, HttpResponseListener<T> listener) {
         this.mTag = tag;
         this.mResponseListener = listener;
     }

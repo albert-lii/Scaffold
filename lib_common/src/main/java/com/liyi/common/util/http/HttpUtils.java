@@ -31,7 +31,7 @@ public class HttpUtils {
      * @param <T>
      */
     public static <T> void toSubscribe(Observable<T> observable, HttpCallback<T> callback) {
-        toSubscribe(observable, new ApiObserver<T>(callback));
+        toSubscribe(observable, new ApiResponse<T>(callback));
     }
 
 
@@ -42,7 +42,7 @@ public class HttpUtils {
      * @param observer
      * @param <T>
      */
-    public static <T> void toSubscribe(Observable<T> observable, ApiObserver<T> observer) {
+    public static <T> void toSubscribe(Observable<T> observable, ApiResponse<T> observer) {
         CallServer.getInstance().toSubscribe(observable, observer);
     }
 

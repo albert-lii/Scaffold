@@ -2,7 +2,7 @@ package com.liyi.common.mvp;
 
 import android.support.annotation.NonNull;
 
-import com.liyi.common.util.http.ApiObserver;
+import com.liyi.common.util.http.ApiResponse;
 import com.liyi.common.util.http.HttpCallback;
 import com.liyi.xlib.mvp.BaseXModelNet;
 
@@ -31,6 +31,6 @@ public abstract class BaseModel extends BaseXModelNet {
      * @param <T>
      */
     private <T> void sendRequest(@NonNull Object tag, @NonNull Observable<T> observable, HttpCallback callback) {
-        sendRequest(tag, observable, new ApiObserver<T>(callback));
+        sendRequest(tag, observable, new ApiResponse<T>(callback));
     }
 }

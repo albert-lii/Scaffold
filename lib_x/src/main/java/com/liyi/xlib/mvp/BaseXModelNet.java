@@ -3,7 +3,7 @@ package com.liyi.xlib.mvp;
 import android.support.annotation.NonNull;
 
 import com.liyi.xlib.util.http.CallServer;
-import com.liyi.xlib.util.http.response.HttpObserver;
+import com.liyi.xlib.util.http.response.HttpResponse;
 
 import io.reactivex.Observable;
 
@@ -19,7 +19,7 @@ public class BaseXModelNet {
      * @param observer   观察者
      * @param <T>
      */
-    protected <T> void sendRequest(@NonNull Observable<T> observable, @NonNull HttpObserver<T> observer) {
+    protected <T> void sendRequest(@NonNull Observable<T> observable, @NonNull HttpResponse<T> observer) {
         CallServer.getInstance().toSubscribe(observable, observer);
     }
 
@@ -31,7 +31,7 @@ public class BaseXModelNet {
      * @param observer   观察者
      * @param <T>
      */
-    protected <T> void sendRequest(@NonNull Object tag, @NonNull Observable<T> observable, @NonNull HttpObserver<T> observer) {
+    protected <T> void sendRequest(@NonNull Object tag, @NonNull Observable<T> observable, @NonNull HttpResponse<T> observer) {
         observer.setTag(tag);
         CallServer.getInstance().toSubscribe(observable, observer);
     }

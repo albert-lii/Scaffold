@@ -1,9 +1,12 @@
 package com.liyi.xlib.util.http;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.liyi.xlib.BuildConfig;
 import com.liyi.xlib.util.http.interceptor.BaseUrlInterceptor;
+import com.liyi.xlib.util.http.interceptor.DownloadInterceptor;
 import com.liyi.xlib.util.http.interceptor.LoggingInterceptor;
 import com.liyi.xlib.util.http.interceptor.OfflineCacheControlInterceptor;
 
@@ -21,11 +24,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Retrofit2.0 配置类
  */
 public class RetrofitClient {
-    // 默认的超时时间
+    // 默认的超时时间（25s）
     private static final int DEF_TIMEOUT_CONNECT = 25;
     private static final int DEF_TIMEOUT_READ = 25;
     private static final int DEF_TIMEOUT_WRITE = 25;
-    // 默认的最大缓存空间
+    // 默认的最大缓存空间（10M）
     private static final int DEF_CACHE_MAX_SIZE = 10 * 1024 * 1024;
     // 默认的缓存文件夹的名字
     private static final String DEF_CACHE_DIR_NAME = "ReClientCache";
@@ -36,6 +39,8 @@ public class RetrofitClient {
     private String mUrlKey;
     // 用于具有多个 BaseUrl 时，在代码中动态更改 BaseUrl
     private Map<String, String> mHostMap;
+    // 下载文件时，多个不同 OnProgressListener，在 Header 中设置的标识 Key
+    private String mDownloadListenerKey;
     private Retrofit mRetrofit;
     private Context mContext;
 
@@ -55,11 +60,21 @@ public class RetrofitClient {
     /**
      * 设置多个域名
      *
+     * @param urlKey
      * @param hostMap
      */
     public void setBaseUrls(String urlKey, Map<String, String> hostMap) {
         this.mUrlKey = urlKey;
         this.mHostMap = hostMap;
+    }
+
+    /**
+     * 设置下载 OnProgressListener 的标识的 key
+     *
+     * @param downloadListenerKey
+     */
+    public void setDownloadProgressListenerKey(String downloadListenerKey) {
+        this.mDownloadListenerKey = downloadListenerKey;
     }
 
     /**
@@ -71,11 +86,27 @@ public class RetrofitClient {
         this.mRetrofit = retrofit;
     }
 
+    /**
+     * 获取 Retrofit
+     *
+     * @return
+     */
     public Retrofit getRetrofit() {
         if (mRetrofit == null) {
             mRetrofit = getDefaultRetrofit();
         }
         return mRetrofit;
+    }
+
+    /**
+     * 创建服务
+     *
+     * @param cls
+     * @param <T>
+     * @return
+     */
+    public <T> T createService(@NonNull Class<T> cls) {
+        return getRetrofit().create(cls);
     }
 
     /**
@@ -115,6 +146,9 @@ public class RetrofitClient {
         // 当有多个域名需求时添加
         if (mHostMap != null && !mHostMap.isEmpty()) {
             builder.addInterceptor(new BaseUrlInterceptor(mUrlKey, mHostMap));
+        }
+        if (!TextUtils.isEmpty(mDownloadListenerKey)) {
+            builder.addInterceptor(new DownloadInterceptor(mDownloadListenerKey));
         }
         // 调试模式下，添加日志打印
         if (BuildConfig.DEBUG) {

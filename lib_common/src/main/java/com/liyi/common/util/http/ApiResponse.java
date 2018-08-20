@@ -2,7 +2,7 @@ package com.liyi.common.util.http;
 
 import android.support.annotation.NonNull;
 
-import com.liyi.xlib.util.http.response.HttpObserver;
+import com.liyi.xlib.util.http.response.HttpResponse;
 import com.liyi.xlib.util.http.response.HttpResponseListener;
 
 /**
@@ -10,13 +10,13 @@ import com.liyi.xlib.util.http.response.HttpResponseListener;
  *
  * @param <T>
  */
-public class ApiObserver<T> extends HttpObserver<T> {
+public class ApiResponse<T> extends HttpResponse<T> {
 
-    public ApiObserver(HttpResponseListener<T> listener) {
+    public ApiResponse(HttpResponseListener<T> listener) {
         super(listener);
     }
 
-    public ApiObserver(@NonNull Object tag, HttpResponseListener<T> listener) {
+    public ApiResponse(@NonNull Object tag, HttpResponseListener<T> listener) {
         super(tag, listener);
     }
 
