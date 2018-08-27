@@ -5,12 +5,14 @@ import android.app.Application;
 import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
+
+import java.lang.reflect.Field;
 
 /**
  * 屏幕适配方案
@@ -32,21 +34,22 @@ public final class ScreenAdapter {
 
     // 适配信息
     private static MatchInfo sMatchInfo;
+    private static MatchInfo sMatchInfoOnMiui;
     // Activity 的生命周期监测
     private static Application.ActivityLifecycleCallbacks mActivityLifecycleCallback;
 
     private ScreenAdapter() {
-        throw new UnsupportedOperationException("u can't instantiate me...");
+        throw new UnsupportedOperationException("you can't instantiate me...");
     }
 
     /**
      * 初始化
      *
-     * @param application
+     * @param context
      */
-    public static void setup(@NonNull final Application application) {
-        DisplayMetrics displayMetrics = application.getResources().getDisplayMetrics();
-        if (sMatchInfo == null) {
+    public static void setup(@NonNull final Context context) {
+        final DisplayMetrics displayMetrics = context.getApplicationContext().getResources().getDisplayMetrics();
+        if (displayMetrics != null && sMatchInfo == null) {
             // 记录系统的原始值
             sMatchInfo = new MatchInfo();
             sMatchInfo.setScreenWidth(displayMetrics.widthPixels);
@@ -56,14 +59,28 @@ public final class ScreenAdapter {
             sMatchInfo.setAppScaledDensity(displayMetrics.scaledDensity);
             sMatchInfo.setAppXdpi(displayMetrics.xdpi);
         }
+        // 用于适配部分 MIUI
+        final DisplayMetrics displayMetricsOnMiui = getMetricsOnMiui(context.getApplicationContext().getResources());
+        if (displayMetricsOnMiui != null && sMatchInfoOnMiui == null) {
+            sMatchInfoOnMiui = new MatchInfo();
+            sMatchInfoOnMiui.setScreenWidth(displayMetricsOnMiui.widthPixels);
+            sMatchInfoOnMiui.setScreenHeight(displayMetricsOnMiui.heightPixels);
+            sMatchInfoOnMiui.setAppDensity(displayMetricsOnMiui.density);
+            sMatchInfoOnMiui.setAppDensityDpi(displayMetricsOnMiui.densityDpi);
+            sMatchInfoOnMiui.setAppScaledDensity(displayMetricsOnMiui.scaledDensity);
+            sMatchInfoOnMiui.setAppXdpi(displayMetricsOnMiui.xdpi);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             // 添加字体变化的监听
-            application.registerComponentCallbacks(new ComponentCallbacks() {
+            context.registerComponentCallbacks(new ComponentCallbacks() {
                 @Override
                 public void onConfigurationChanged(Configuration newConfig) {
                     // 字体改变后,将 appScaledDensity 重新赋值
                     if (newConfig != null && newConfig.fontScale > 0) {
-                        sMatchInfo.setAppScaledDensity(application.getResources().getDisplayMetrics().scaledDensity);
+                        sMatchInfo.setAppScaledDensity(displayMetrics.scaledDensity);
+                        if (displayMetricsOnMiui != null && sMatchInfoOnMiui != null) {
+                            sMatchInfoOnMiui.setAppScaledDensity(displayMetricsOnMiui.scaledDensity);
+                        }
                     }
                 }
 
@@ -136,7 +153,6 @@ public final class ScreenAdapter {
         }
     }
 
-
     /**
      * 适配屏幕（放在 Activity 的 setContentView() 之前执行）
      *
@@ -178,53 +194,6 @@ public final class ScreenAdapter {
     }
 
     /**
-     * 重置适配信息，取消适配
-     */
-    public static void cancelMatch(@NonNull final Context context) {
-        cancelMatch(context, MATCH_UNIT_DP);
-        cancelMatch(context, MATCH_UNIT_PT);
-    }
-
-    /**
-     * 重置适配信息，取消适配
-     *
-     * @param context
-     * @param matchUnit 需要取消适配的单位
-     */
-    public static void cancelMatch(@NonNull final Context context, int matchUnit) {
-        if (sMatchInfo != null) {
-            final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-            if (matchUnit == MATCH_UNIT_DP) {
-                if (displayMetrics.density != sMatchInfo.getAppDensity()) {
-                    displayMetrics.density = sMatchInfo.getAppDensity();
-                }
-                if (displayMetrics.densityDpi != sMatchInfo.getAppDensityDpi()) {
-                    displayMetrics.densityDpi = (int) sMatchInfo.getAppDensityDpi();
-                }
-                if (displayMetrics.scaledDensity != sMatchInfo.getAppScaledDensity()) {
-                    displayMetrics.scaledDensity = sMatchInfo.getAppScaledDensity();
-                }
-            } else if (matchUnit == MATCH_UNIT_PT) {
-                if (displayMetrics.xdpi != sMatchInfo.getAppXdpi()) {
-                    displayMetrics.xdpi = sMatchInfo.getAppXdpi();
-                }
-            }
-        }
-    }
-
-    public static float dp2px(@NonNull Context context, float dpVal) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, context.getResources().getDisplayMetrics());
-    }
-
-    public static float pt2px(@NonNull Context context, float ptVal) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PT, ptVal, context.getResources().getDisplayMetrics());
-    }
-
-    public static MatchInfo getMatchInfo() {
-        return sMatchInfo;
-    }
-
-    /**
      * 使用 dp 作为适配单位（适合在新项目中使用，在老项目中使用会对原来既有的 dp 值产生影响）
      * <br>
      * <ul>
@@ -239,17 +208,30 @@ public final class ScreenAdapter {
      * @param base       适配基准
      */
     private static void matchByDP(@NonNull final Context context, final float designSize, int base) {
+        if (sMatchInfo != null) {
+            final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+            matchByDP(sMatchInfo, displayMetrics, designSize, base);
+        }
+        // 适配部分 MIUI
+        if (sMatchInfoOnMiui != null) {
+            final DisplayMetrics displayMetricsOnMiui = getMetricsOnMiui(context.getResources());
+            if (displayMetricsOnMiui != null) {
+                matchByDP(sMatchInfoOnMiui, displayMetricsOnMiui, designSize, base);
+            }
+        }
+    }
+
+    private static void matchByDP(final MatchInfo matchInfo, final DisplayMetrics displayMetrics, final float designSize, final int base) {
         final float targetDensity;
         if (base == MATCH_BASE_WIDTH) {
-            targetDensity = sMatchInfo.getScreenWidth() * 1f / designSize;
+            targetDensity = matchInfo.getScreenWidth() * 1f / designSize;
         } else if (base == MATCH_BASE_HEIGHT) {
-            targetDensity = sMatchInfo.getScreenHeight() * 1f / designSize;
+            targetDensity = matchInfo.getScreenHeight() * 1f / designSize;
         } else {
-            targetDensity = sMatchInfo.getScreenWidth() * 1f / designSize;
+            targetDensity = matchInfo.getScreenWidth() * 1f / designSize;
         }
         final int targetDensityDpi = (int) (targetDensity * 160);
-        final float targetScaledDensity = targetDensity * (sMatchInfo.getAppScaledDensity() / sMatchInfo.getAppDensity());
-        final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        final float targetScaledDensity = targetDensity * (matchInfo.getAppScaledDensity() / matchInfo.getAppDensity());
         displayMetrics.density = targetDensity;
         displayMetrics.densityDpi = targetDensityDpi;
         displayMetrics.scaledDensity = targetScaledDensity;
@@ -266,16 +248,103 @@ public final class ScreenAdapter {
      * @param base       适配基准
      */
     private static void matchByPT(@NonNull final Context context, final float designSize, int base) {
+        if (sMatchInfo != null) {
+            final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+            matchByPt(sMatchInfo, displayMetrics, designSize, base);
+        }
+        // 适配部分 MIUI
+        if (sMatchInfoOnMiui != null) {
+            final DisplayMetrics displayMetricsOnMiui = getMetricsOnMiui(context.getResources());
+            if (displayMetricsOnMiui != null) {
+                matchByPt(sMatchInfoOnMiui, displayMetricsOnMiui, designSize, base);
+            }
+        }
+    }
+
+    private static void matchByPt(final MatchInfo matchInfo, final DisplayMetrics displayMetrics, final float designSize, final int base) {
         final float targetXdpi;
         if (base == MATCH_BASE_WIDTH) {
-            targetXdpi = sMatchInfo.getScreenWidth() * 72f / designSize;
+            targetXdpi = matchInfo.getScreenWidth() * 72f / designSize;
         } else if (base == MATCH_BASE_HEIGHT) {
-            targetXdpi = sMatchInfo.getScreenHeight() * 72f / designSize;
+            targetXdpi = matchInfo.getScreenHeight() * 72f / designSize;
         } else {
-            targetXdpi = sMatchInfo.getScreenWidth() * 72f / designSize;
+            targetXdpi = matchInfo.getScreenWidth() * 72f / designSize;
         }
-        final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         displayMetrics.xdpi = targetXdpi;
+    }
+
+    /**
+     * 重置适配信息，取消适配
+     */
+    public static void cancelMatch(@NonNull final Context context) {
+        cancelMatch(context, MATCH_UNIT_DP);
+        cancelMatch(context, MATCH_UNIT_PT);
+    }
+
+    /**
+     * 重置适配信息，取消适配
+     *
+     * @param context
+     * @param matchUnit 需要取消适配的单位
+     */
+    public static void cancelMatch(@NonNull final Context context, int matchUnit) {
+        if (sMatchInfo != null) {
+            final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+            cancelMatch(matchUnit, displayMetrics, sMatchInfo);
+        }
+        // 适配部分 MIUI
+        if (sMatchInfoOnMiui != null) {
+            final DisplayMetrics displayMetricsOnMiui = getMetricsOnMiui(context.getResources());
+            if (displayMetricsOnMiui != null) {
+                cancelMatch(matchUnit, displayMetricsOnMiui, sMatchInfoOnMiui);
+            }
+        }
+    }
+
+    private static void cancelMatch(final int matchUnit, final DisplayMetrics displayMetrics, final MatchInfo matchInfo) {
+        if (matchUnit == MATCH_UNIT_DP) {
+            if (matchInfo.getAppDensity() != 0 && displayMetrics.density != matchInfo.getAppDensity()) {
+                displayMetrics.density = matchInfo.getAppDensity();
+            }
+            if (matchInfo.getAppDensityDpi() != 0 && displayMetrics.densityDpi != matchInfo.getAppDensityDpi()) {
+                displayMetrics.densityDpi = (int) matchInfo.getAppDensityDpi();
+            }
+            if (matchInfo.getAppScaledDensity() != 0 && displayMetrics.scaledDensity != matchInfo.getAppScaledDensity()) {
+                displayMetrics.scaledDensity = matchInfo.getAppScaledDensity();
+            }
+        } else if (matchUnit == MATCH_UNIT_PT) {
+            if (matchInfo.getAppXdpi() != 0 && displayMetrics.xdpi != matchInfo.getAppXdpi()) {
+                displayMetrics.xdpi = matchInfo.getAppXdpi();
+            }
+        }
+    }
+
+    public static MatchInfo getMatchInfo() {
+        return sMatchInfo;
+    }
+
+    public static MatchInfo getMatchInfoOnMiui() {
+        return sMatchInfoOnMiui;
+    }
+
+    /**
+     * 解决 MIUI 更改框架导致的 MIUI7 + Android5.1.1 上出现的失效问题 (以及极少数基于这部分 MIUI 去掉 ART 然后置入 XPosed 的手机)
+     * 来源于: https://github.com/Firedamp/Rudeness/blob/master/rudeness-sdk/src/main/java/com/bulong/rudeness/RudenessScreenHelper.java#L61:5
+     *
+     * @param resources {@link Resources}
+     * @return {@link DisplayMetrics}, 可能为 {@code null}
+     */
+    private static DisplayMetrics getMetricsOnMiui(Resources resources) {
+        if ("MiuiResources".equals(resources.getClass().getSimpleName()) || "XResources".equals(resources.getClass().getSimpleName())) {
+            try {
+                Field field = Resources.class.getDeclaredField("mTmpMetrics");
+                field.setAccessible(true);
+                return (DisplayMetrics) field.get(resources);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
     }
 
     /**
