@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 
-def compile_sdk_version = rootProject.ext.lib_compile_sdk_version
-def min_sdk_version = rootProject.ext.lib_min_sdk_version
-def target_sdk_version = rootProject.ext.lib_target_sdk_version
-def support_version = rootProject.ext.lib_support_version
-def version_code = rootProject.ext.lib_version_code
-def version_name = rootProject.ext.lib_version_name
+def compile_sdk_version = rootProject.ext.compile_sdk_version
+def target_sdk_version = rootProject.ext.target_sdk_version
+def support_version = rootProject.ext.support_version
+def min_sdk_version = 9
+def version_code = 1
+def version_name = "1.0.0"
 
 android {
     compileSdkVersion compile_sdk_version
@@ -26,7 +26,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
@@ -37,6 +36,8 @@ dependencies {
 
     api 'com.android.support:appcompat-v7:' + support_version
 
+    api "android.arch.lifecycle:extensions:1.1.0"
+//    annotationProcessor "android.arch.lifecycle:compiler:1.1.0"
     // eventbus 3.0
     api 'org.greenrobot:eventbus:3.0.0'
     // gson

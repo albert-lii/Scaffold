@@ -10,9 +10,9 @@ public interface HttpResponseListener<T> {
      * 网络请求成功
      *
      * @param tag 请求的标记
-     * @param t   返回的数据
+     * @param data   返回的数据
      */
-    void onSuccess(Object tag, T t);
+    void onSuccess(Object tag, T data);
 
     /**
      * 网络请求失败

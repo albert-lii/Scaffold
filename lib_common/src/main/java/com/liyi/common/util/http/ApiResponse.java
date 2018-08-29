@@ -3,7 +3,6 @@ package com.liyi.common.util.http;
 import android.support.annotation.NonNull;
 
 import com.liyi.xlib.util.http.response.HttpResponse;
-import com.liyi.xlib.util.http.response.HttpResponseListener;
 
 /**
  * 请求响应类
@@ -12,12 +11,12 @@ import com.liyi.xlib.util.http.response.HttpResponseListener;
  */
 public class ApiResponse<T> extends HttpResponse<T> {
 
-    public ApiResponse(HttpResponseListener<T> listener) {
-        super(listener);
+    public ApiResponse(HttpCallback<T> callback) {
+        super(callback);
     }
 
-    public ApiResponse(@NonNull Object tag, HttpResponseListener<T> listener) {
-        super(tag, listener);
+    public ApiResponse(@NonNull Object tag, HttpCallback<T> callback) {
+        super(tag, callback);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
+import com.liyi.sample.mvvm.LoginAty;
 import com.liyi.xlib.util.ScreenAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.btn_sample2:
                 startActivity(new Intent(this, Sample2Activity.class));
+                break;
+            case R.id.btn_login:
+                startActivity(new Intent(this, LoginAty.class));
                 break;
         }
     }

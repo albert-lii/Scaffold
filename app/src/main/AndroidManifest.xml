@@ -25,5 +25,9 @@
         <activity
             android:name=".Sample2Activity"
             android:launchMode="singleTop" />
+
+        <activity
+            android:name=".mvvm.LoginAty"
+            android:launchMode="singleTop" />
     </application>
 </manifest>

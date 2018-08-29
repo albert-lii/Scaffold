@@ -7,35 +7,32 @@
     android:padding="10dp"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/btn_sample1"
+    <EditText
+        android:id="@+id/et_phoneNo"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginBottom="10dp"
-        android:background="@color/colorPrimary"
         android:gravity="center"
-        android:onClick="onClick"
-        android:text="sample1"
-        android:textColor="#ffffff" />
+        android:hint="手机" />
 
-    <TextView
-        android:id="@+id/btn_sample2"
+    <EditText
+        android:id="@+id/et_password"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/colorPrimary"
         android:gravity="center"
-        android:onClick="onClick"
-        android:text="sample2"
-        android:textColor="#ffffff" />
+        android:hint="密码" />
 
-    <TextView
+    <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:onClick="onClick"
-        android:text="Login"
-        android:textColor="#ffffff" />
+        android:layout_height="wrap_content"
+        android:text="登录" />
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:textSize="30sp" />
 </LinearLayout>
