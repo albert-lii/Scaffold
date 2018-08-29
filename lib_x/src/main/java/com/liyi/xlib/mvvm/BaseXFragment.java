@@ -19,7 +19,7 @@ public abstract class BaseXFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // 避免重复加载 UI
         if (mContentView == null) {
-            mContentView = inflater.inflate(onCreateLayoutId(), container, false);
+            mContentView = inflater.inflate(getLayoutId(), container, false);
         }
         ViewGroup parent = (ViewGroup) mContentView.getParent();
         if (parent != null) {
@@ -29,7 +29,7 @@ public abstract class BaseXFragment extends Fragment {
         return mContentView;
     }
 
-    protected abstract int onCreateLayoutId();
+    protected abstract int getLayoutId();
 
     protected abstract void initView();
 

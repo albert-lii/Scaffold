@@ -27,23 +27,23 @@ public abstract class BaseXLazyFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // 避免重复加载 UI
         if (mContentView == null) {
-            mContentView = inflater.inflate(onCreateLayoutId(), container, false);
+            mContentView = inflater.inflate(getLayoutId(), container, false);
         }
         ViewGroup parent = (ViewGroup) mContentView.getParent();
         if (parent != null) {
             parent.removeView(mContentView);
         }
-        onInitView();
+        initView();
         isInitView = true;
         lazyLoadData();
         return mContentView;
     }
 
-    protected abstract int onCreateLayoutId();
+    protected abstract int getLayoutId();
 
-    protected abstract void onInitView();
+    protected abstract void initView();
 
-    protected abstract void onInitData();
+    protected abstract void initData();
 
     public <VM extends ViewModel> VM createViewModel(Class<VM> clz) {
         return ViewModelProviders.of(this).get(clz);
@@ -67,7 +67,7 @@ public abstract class BaseXLazyFragment extends Fragment {
 
     private void lazyLoadData() {
         if (!isFirstLoad || !isVisible || !isInitView) return;
-        onInitData();
+        initData();
         isFirstLoad = false;
     }
 }

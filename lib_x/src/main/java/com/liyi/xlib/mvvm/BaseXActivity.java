@@ -12,13 +12,13 @@ public abstract class BaseXActivity extends FragmentActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(onCreateLayoutId());
-        onInitView();
+        setContentView(getLayoutId());
+        initView();
     }
 
-    protected abstract int onCreateLayoutId();
+    protected abstract int getLayoutId();
 
-    protected abstract void onInitView();
+    protected abstract void initView();
 
     public <VM extends ViewModel> VM createViewModel(Class<VM> clz) {
         return ViewModelProviders.of(this).get(clz);
