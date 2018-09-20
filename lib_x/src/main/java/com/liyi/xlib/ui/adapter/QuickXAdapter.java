@@ -22,6 +22,7 @@ public abstract class QuickXAdapter<T, VH extends BaseXHolder> extends BaseXAdap
     protected List<T> mData;
 
     public QuickXAdapter() {
+
     }
 
     public QuickXAdapter(List<T> list, @LayoutRes int layoutId) {

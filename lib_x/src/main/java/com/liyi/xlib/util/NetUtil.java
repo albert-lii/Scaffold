@@ -23,7 +23,7 @@ import java.util.Enumeration;
 /**
  * 网络相关工具类
  */
-public final class NetUtil {
+public final class NetUtil { 
     private static final int NETWORK_TYPE_GSM = 16;
     private static final int NETWORK_TYPE_TD_SCDMA = 17;
     private static final int NETWORK_TYPE_IWLAN = 18;

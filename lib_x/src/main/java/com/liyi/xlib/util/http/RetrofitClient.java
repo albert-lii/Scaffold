@@ -31,7 +31,7 @@ public class RetrofitClient {
     // 默认的最大缓存空间（10M）
     private static final int DEF_CACHE_MAX_SIZE = 10 * 1024 * 1024;
     // 默认的缓存文件夹的名字
-    private static final String DEF_CACHE_DIR_NAME = "ReClientCache";
+    private static final String DEF_CACHE_DIR_NAME = "RtClientCache";
 
     // 域名
     private String mBaseUrl;

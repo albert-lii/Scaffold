@@ -1,1 +1,5 @@
-include ':app',':lib_common', ':lib_x', ':xlibsample2', ':lib_core'
+include ':app', ':scaffold-http',
+        ':lib_common',':lib_core', ':lib_x',
+        ':scaffold-ui',
+        ':scaffold-util'
+
