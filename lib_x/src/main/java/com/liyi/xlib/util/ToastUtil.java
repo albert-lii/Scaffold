@@ -240,7 +240,7 @@ public final class ToastUtil {
      * @param text     消息文本
      * @param duration 显示时间
      */
-    public static void show(@NonNull final Context context, final CharSequence text, final int duration) {
+    public static void show(@NonNull final Context context, final CharSequence text,final int duration) {
         HANDLER.post(new Runnable() {
             @SuppressLint("ShowToast")
             @Override

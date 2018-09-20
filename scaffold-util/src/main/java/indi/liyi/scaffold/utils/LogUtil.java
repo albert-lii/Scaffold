@@ -2,6 +2,7 @@ package indi.liyi.scaffold.utils;
 
 import android.util.Log;
 
+
 public class LogUtil {
     /**
      * LEVEL_NONE = 0 : No logs
@@ -33,39 +34,44 @@ public class LogUtil {
      */
     public static final int LEVEL_E = 5;
 
-    public static int debug_Level = LEVEL_E;
+    /**
+     * LEVEL_ALL = 6 : All logs
+     */
+    public static final int LEVEL_ALL = 6;
+
+    public static int debug_Level = LEVEL_ALL;
 
     public static void v(String tag, String text) {
-        if (debug_Level <= LEVEL_V) {
-            String msg = buildMessage(text, "[SCAFFOLD-VERBOSE]");
+        if (debug_Level == LEVEL_V || debug_Level == LEVEL_ALL) {
+            String msg = buildMessage("[V]", text);
             Log.v(tag, msg);
         }
     }
 
     public static void d(String tag, String text) {
-        if (debug_Level <= LEVEL_D) {
-            String msg = buildMessage(text, "[SCAFFOLD-DEBUG]");
+        if (debug_Level == LEVEL_D || debug_Level == LEVEL_ALL) {
+            String msg = buildMessage("[D]", text);
             Log.d(tag, msg);
         }
     }
 
     public static void i(String tag, String text) {
-        if (debug_Level <= LEVEL_I) {
-            String msg = buildMessage(text, "[SCAFFOLD-INFO]");
+        if (debug_Level == LEVEL_I || debug_Level == LEVEL_ALL) {
+            String msg = buildMessage("[I]", text);
             Log.i(tag, msg);
         }
     }
 
     public static void w(String tag, String text) {
-        if (debug_Level <= LEVEL_W) {
-            String msg = buildMessage(text, "[SCAFFOLD-WARNING]");
+        if (debug_Level == LEVEL_W || debug_Level == LEVEL_ALL) {
+            String msg = buildMessage("[W]", text);
             Log.w(tag, msg);
         }
     }
 
     public static void e(String tag, String text) {
-        if (debug_Level <= LEVEL_E) {
-            String msg = buildMessage(text, "[SCAFFOLD-ERROR]");
+        if (debug_Level == LEVEL_E || debug_Level == LEVEL_ALL) {
+            String msg = buildMessage("[E]", text);
             Log.e(tag, msg);
         }
     }
@@ -78,14 +84,14 @@ public class LogUtil {
      * @return Message String
      */
     protected static String buildMessage(String level, String text) {
-        StackTraceElement stackTraceElement = new Throwable().fillInStackTrace().getStackTrace()[2];
+        StackTraceElement caller = new Throwable().fillInStackTrace().getStackTrace()[2];
         return new StringBuilder()
                 .append(level).append("\t")
                 .append("ThreadID=" + Thread.currentThread().getId()).append(", ")
-                .append("FileName=").append(stackTraceElement.getFileName()).append(", ")// package name + class name
-                .append("ClassName=").append(stackTraceElement.getClassName()).append(", ")
-                .append("MethodName=").append(stackTraceElement.getMethodName()).append("(): ")
-                .append("Line").append(stackTraceElement.getLineNumber()).append(" ==> ")
+                .append("FileName=").append(caller.getFileName()).append(", ")// package name + class name
+                .append("ClassName=").append(caller.getClassName()).append(", ")
+                .append("MethodName=").append(caller.getMethodName()).append("(): ")
+                .append("Line").append(caller.getLineNumber()).append(" ==> ")
                 .append(text)
                 .toString();
     }
