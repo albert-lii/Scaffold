@@ -1,4 +1,4 @@
-package indi.liyi.scaffold.utils;
+package indi.liyi.scaffold.utils.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 public class ScreenUtil {
 
     /**
-     * Get the width and height of the screen (unit: px)
+     * Return the width and height of the screen (unit: px)
      *
      * @param context
      * @return Screen size
@@ -45,7 +45,7 @@ public class ScreenUtil {
     }
 
     /**
-     * Get screen density
+     * Return screen density
      *
      * @param context
      * @return Screen density
@@ -55,7 +55,7 @@ public class ScreenUtil {
     }
 
     /**
-     * Get pixel density (number of pixels per square inch)
+     * Return pixel density (number of pixels per square inch)
      * <p>For example: 0.75 / 1 / 1.5 / ...(dpi/160)</p>
      *
      * @param context
@@ -66,7 +66,7 @@ public class ScreenUtil {
     }
 
     /**
-     * Gets the height of the status bar
+     * Return the height of the status bar
      *
      * @param context
      * @return Height of the status bar
@@ -81,7 +81,7 @@ public class ScreenUtil {
     }
 
     /**
-     * Gets the height of the bottom navigation bar
+     * Return the height of the bottom navigation bar
      *
      * @param context
      * @return Height of the bottom navigation bar
@@ -101,10 +101,10 @@ public class ScreenUtil {
     }
 
     /**
-     * Determine whether the bottom navigation bar exists
+     * Return whether the bottom navigation bar exists
      *
      * @param context
-     * @return {@code true}: exist<br>{@code false}:  not exist
+     * @return {@code true}: exist <br> {@code false}:  not exist
      */
     public static boolean hasNavigationBar(@NonNull Context context) {
         boolean hasNavigationBar = false;
@@ -165,12 +165,12 @@ public class ScreenUtil {
     }
 
     /**
-     * Determines whether the screen display is full screen
+     * Return whether the screen display is full screen
      *
      * @param activity
-     * @return {@code true}: yes<br>{@code false}: no
+     * @return {@code true}: yes <br> {@code false}: no
      */
-    public static boolean isFullScreen(@NonNull final Activity activity) {
+    public static boolean isFullScreen(@NonNull Activity activity) {
         int fullScreenFlag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
         return (activity.getWindow().getAttributes().flags & fullScreenFlag) == fullScreenFlag;
     }
@@ -195,14 +195,14 @@ public class ScreenUtil {
      *
      * @param activity
      */
-    public static void setPortrait(@NonNull final Activity activity) {
+    public static void setPortrait(@NonNull Activity activity) {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     /**
-     * Determine whether screen display is horizontal screen display
+     * Return whether screen display is horizontal screen display
      *
-     * @return {@code true}: yes<br>{@code false}: no
+     * @return {@code true}: yes <br> {@code false}: no
      */
     public static boolean isLandscape(@NonNull Context context) {
         return context.getResources().getConfiguration().orientation
@@ -210,9 +210,9 @@ public class ScreenUtil {
     }
 
     /**
-     * Determine whether screen display is vertical screen display.
+     * Return whether screen display is vertical screen display.
      *
-     * @return {@code true}: yes<br>{@code false}: no
+     * @return {@code true}: yes <br> {@code false}: no
      */
     public static boolean isPortrait(@NonNull Context context) {
         return context.getResources().getConfiguration().orientation
@@ -220,7 +220,7 @@ public class ScreenUtil {
     }
 
     /**
-     * Get the rotation angle of the screen
+     * Return the rotation angle of the screen
      *
      * @param activity
      * @return The rotation angle of the screen
@@ -241,7 +241,7 @@ public class ScreenUtil {
     }
 
     /**
-     * Screen shot
+     * Return the bitmap of the screen shot
      *
      * @param activity
      * @return A bitmap of the screen shot
@@ -251,7 +251,7 @@ public class ScreenUtil {
     }
 
     /**
-     * 截屏
+     * Return the bitmap of the screen shot
      *
      * @param activity
      * @param isDeleteStatusBar Whether to remove the status bar
@@ -281,8 +281,7 @@ public class ScreenUtil {
     }
 
     /**
-     * Determine whether the device is a tablet
-     *
+     * Return whether the device is a tablet
      */
     public static boolean isTablet(@NonNull Context context) {
         return (context.getResources().getConfiguration().screenLayout

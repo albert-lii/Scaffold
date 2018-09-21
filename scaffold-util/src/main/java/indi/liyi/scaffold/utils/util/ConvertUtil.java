@@ -1,14 +1,14 @@
-package indi.liyi.scaffold.utils;
+package indi.liyi.scaffold.utils.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
 
 
-public class UnitUtil {
+public class ConvertUtil {
 
     /**
-     * Dp to px
+     * Value of dp to value of px
      *
      * @param dpVal Value of dp
      * @return Value of px
@@ -18,7 +18,7 @@ public class UnitUtil {
     }
 
     /**
-     * Sp to px
+     * Value of sp to value of px
      *
      * @param spVal Value of sp
      * @return Value of px
@@ -28,10 +28,10 @@ public class UnitUtil {
     }
 
     /**
-     * Pt to px
+     * Value of pt to value of px
      *
      * @param ptVal Value of pt
-     * @return Value of dp
+     * @return Value of px
      */
     public static float ptToPx(@NonNull Context context, float ptVal) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PT, ptVal, context.getResources().getDisplayMetrics());
@@ -39,7 +39,7 @@ public class UnitUtil {
 
 
     /**
-     * Px to dp
+     * Value of px to value of dp
      *
      * @param pxVal Value of px
      * @return Value of dp
@@ -50,7 +50,7 @@ public class UnitUtil {
     }
 
     /**
-     * Px to sp
+     * Value of px to value of sp
      *
      * @param pxVal Value of px
      * @return Value of sp
@@ -61,12 +61,12 @@ public class UnitUtil {
     }
 
     /**
-     * Px to pt
+     * Value of px to value of pt
      *
-     * @param pxVal Value of px
+     * @param pxVal Value of pt
      * @return Value of sp
      */
-    public static float ptToSp(@NonNull Context context, float pxVal) {
+    public static float pxToPt(@NonNull Context context, float pxVal) {
         final float scale = context.getResources().getDisplayMetrics().xdpi;
         return pxVal * 72f / scale + 0.5f;
     }

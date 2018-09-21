@@ -1,4 +1,4 @@
-package indi.liyi.scaffold.utils;
+package indi.liyi.scaffold.utils.util;
 
 import android.util.Log;
 
@@ -39,38 +39,38 @@ public class LogUtil {
      */
     public static final int LEVEL_ALL = 6;
 
-    public static int debug_Level = LEVEL_ALL;
+    public static int logLevel = LEVEL_ALL;
 
     public static void v(String tag, String text) {
-        if (debug_Level == LEVEL_V || debug_Level == LEVEL_ALL) {
+        if (logLevel == LEVEL_V || logLevel == LEVEL_ALL) {
             String msg = buildMessage("[V]", text);
             Log.v(tag, msg);
         }
     }
 
     public static void d(String tag, String text) {
-        if (debug_Level == LEVEL_D || debug_Level == LEVEL_ALL) {
+        if (logLevel == LEVEL_D || logLevel == LEVEL_ALL) {
             String msg = buildMessage("[D]", text);
             Log.d(tag, msg);
         }
     }
 
     public static void i(String tag, String text) {
-        if (debug_Level == LEVEL_I || debug_Level == LEVEL_ALL) {
+        if (logLevel == LEVEL_I || logLevel == LEVEL_ALL) {
             String msg = buildMessage("[I]", text);
             Log.i(tag, msg);
         }
     }
 
     public static void w(String tag, String text) {
-        if (debug_Level == LEVEL_W || debug_Level == LEVEL_ALL) {
+        if (logLevel == LEVEL_W || logLevel == LEVEL_ALL) {
             String msg = buildMessage("[W]", text);
             Log.w(tag, msg);
         }
     }
 
     public static void e(String tag, String text) {
-        if (debug_Level == LEVEL_E || debug_Level == LEVEL_ALL) {
+        if (logLevel == LEVEL_E || logLevel == LEVEL_ALL) {
             String msg = buildMessage("[E]", text);
             Log.e(tag, msg);
         }

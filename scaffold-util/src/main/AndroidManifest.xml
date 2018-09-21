@@ -1,2 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="indi.liyi.scaffold.utils" />
+    package="indi.liyi.scaffold.utils">
+
+</manifest>

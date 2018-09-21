@@ -1,4 +1,4 @@
-package com.liyi.xlib.constant;
+package indi.liyi.scaffold.utils.constant;
 
 
 import android.support.annotation.IntDef;
@@ -12,7 +12,8 @@ import java.lang.annotation.RetentionPolicy;
         NetworkType.NETWORK_WIFI,
         NetworkType.NETWORK_2G,
         NetworkType.NETWORK_3G,
-        NetworkType.NETWORK_4G
+        NetworkType.NETWORK_4G,
+        NetworkType.NETWORK_ETHERNET
 })
 @Retention(RetentionPolicy.SOURCE)
 public @interface NetworkType {
@@ -40,4 +41,8 @@ public @interface NetworkType {
      * 4G
      */
     int NETWORK_4G = 4;
+    /**
+     * Ethernet
+     */
+    int NETWORK_ETHERNET = 5;
 }

@@ -1,4 +1,4 @@
-package indi.liyi.scaffold.utils;
+package indi.liyi.scaffold.utils.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -31,7 +31,7 @@ import android.widget.Toast;
 import java.lang.reflect.Field;
 
 
-public final class ToastUtil {
+public class ToastUtil {
     private static final int INVALID_VAL = -1;
     private static final int DEFAULT_COLOR = 0xFEFFFFFF;
     private static final String NULL = "null";
