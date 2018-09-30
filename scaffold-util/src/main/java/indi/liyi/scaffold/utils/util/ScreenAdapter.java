@@ -15,39 +15,33 @@ import android.util.DisplayMetrics;
 import java.lang.reflect.Field;
 
 /**
- * 屏幕适配方案
- * <br>
+ * Methods to solve the problem of screen adaptation
+ * <p>
  * <p>PS: 提供 dp、sp 以及 pt 作为适配单位，建议开发中以 dp、sp 适配为主，pt 可作为 dp、sp 的适配补充</p>
- * <p>PS: 由今日头条适配方案修改而来: https://mp.weixin.qq.com/s/d9QCoBP6kV9VSWvVldVVwA</p>
  */
-public final class ScreenAdapter {
+public class ScreenAdapter {
     /**
-     * 屏幕适配的基准
+     * The adaptation standards
      */
     public static final int MATCH_BASE_WIDTH = 0;
     public static final int MATCH_BASE_HEIGHT = 1;
     /**
-     * 适配单位
+     * The units for screen adaptation
      */
     public static final int MATCH_UNIT_DP = 0;
     public static final int MATCH_UNIT_PT = 1;
 
-    // 适配信息
+    // Screen adaptation information
     private static MatchInfo sMatchInfo;
     private static MatchInfo sMatchInfoOnMiui;
-    // Activity 的生命周期监测
+    // The life cycle monitoring Class of activities
     private static Application.ActivityLifecycleCallbacks mActivityLifecycleCallback;
 
 
-    /**
-     * 初始化
-     *
-     * @param context
-     */
-    public static void setup(@NonNull final Context context) {
+    public static void setup(@NonNull Context context) {
         final DisplayMetrics displayMetrics = context.getApplicationContext().getResources().getDisplayMetrics();
         if (displayMetrics != null && sMatchInfo == null) {
-            // 记录系统的原始值
+            // Save the initial values of the system
             sMatchInfo = new MatchInfo();
             sMatchInfo.setScreenWidth(displayMetrics.widthPixels);
             sMatchInfo.setScreenHeight(displayMetrics.heightPixels);
@@ -56,7 +50,7 @@ public final class ScreenAdapter {
             sMatchInfo.setAppScaledDensity(displayMetrics.scaledDensity);
             sMatchInfo.setAppXdpi(displayMetrics.xdpi);
         }
-        // 用于适配部分 MIUI
+        // Used to be compatible with some Xiaomi phones.
         final DisplayMetrics displayMetricsOnMiui = getMetricsOnMiui(context.getApplicationContext().getResources());
         if (displayMetricsOnMiui != null && sMatchInfoOnMiui == null) {
             sMatchInfoOnMiui = new MatchInfo();
@@ -68,11 +62,11 @@ public final class ScreenAdapter {
             sMatchInfoOnMiui.setAppXdpi(displayMetricsOnMiui.xdpi);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            // 添加字体变化的监听
+            // Monitor font changes
             context.registerComponentCallbacks(new ComponentCallbacks() {
                 @Override
                 public void onConfigurationChanged(Configuration newConfig) {
-                    // 字体改变后,将 appScaledDensity 重新赋值
+                    // After the font changes, reassign the appscaleddensity
                     if (newConfig != null && newConfig.fontScale > 0) {
                         sMatchInfo.setAppScaledDensity(displayMetrics.scaledDensity);
                         if (displayMetricsOnMiui != null && sMatchInfoOnMiui != null) {
@@ -89,7 +83,7 @@ public final class ScreenAdapter {
     }
 
     /**
-     * 在 application 中全局激活适配（也可单独使用 match() 方法在指定页面中配置适配）
+     * Activate the global adaptation scheme in application
      */
     @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static void register(@NonNull final Application application, final float designSize, final int matchBase, final int matchUnit) {
@@ -137,7 +131,7 @@ public final class ScreenAdapter {
     }
 
     /**
-     * 全局取消所有的适配
+     * Cancel the global adaptation scheme
      */
     @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static void unregister(@NonNull final Application application, @NonNull int... matchUnit) {
@@ -151,35 +145,38 @@ public final class ScreenAdapter {
     }
 
     /**
-     * 适配屏幕（放在 Activity 的 setContentView() 之前执行）
+     * The method of adapting the screen
+     * It must be executed before the setContentView() method of activity
      *
      * @param context
      * @param designSize
      */
-    public static void match(@NonNull final Context context, final float designSize) {
+    public static void match(@NonNull Context context, float designSize) {
         match(context, designSize, MATCH_BASE_WIDTH, MATCH_UNIT_DP);
     }
 
     /**
-     * 适配屏幕（放在 Activity 的 setContentView() 之前执行）
+     * The method of adapting the screen
+     * It must be executed before the setContentView() method of activity
      *
      * @param context
      * @param designSize
      * @param matchBase
      */
-    public static void match(@NonNull final Context context, final float designSize, int matchBase) {
+    public static void match(@NonNull Context context, float designSize, int matchBase) {
         match(context, designSize, matchBase, MATCH_UNIT_DP);
     }
 
     /**
-     * 适配屏幕（放在 Activity 的 setContentView() 之前执行）
+     * The method of adapting the screen
+     * It must be executed before the setContentView() method of activity
      *
      * @param context
-     * @param designSize 设计图的尺寸
-     * @param matchBase  适配基准
-     * @param matchUnit  使用的适配单位
+     * @param designSize The size of the design
+     * @param matchBase
+     * @param matchUnit
      */
-    public static void match(@NonNull final Context context, final float designSize, int matchBase, int matchUnit) {
+    public static void match(@NonNull Context context, float designSize, int matchBase, int matchUnit) {
         if (designSize == 0) {
             throw new UnsupportedOperationException("The designSize cannot be equal to 0");
         }
@@ -191,25 +188,24 @@ public final class ScreenAdapter {
     }
 
     /**
-     * 使用 dp 作为适配单位（适合在新项目中使用，在老项目中使用会对原来既有的 dp 值产生影响）
+     * Use dp as the adaptation unit to adapt the screen
      * <br>
      * <ul>
-     * dp 与 px 之间的换算:
+     * Conversion between dp and px:
      * <li> px = density * dp </li>
      * <li> density = dpi / 160 </li>
      * <li> px = dp * (dpi / 160) </li>
      * </ul>
      *
      * @param context
-     * @param designSize 设计图的宽/高（单位: dp）
-     * @param base       适配基准
+     * @param designSize
+     * @param base
      */
-    private static void matchByDP(@NonNull final Context context, final float designSize, int base) {
+    private static void matchByDP(@NonNull Context context, float designSize, int base) {
         if (sMatchInfo != null) {
             final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             matchByDP(sMatchInfo, displayMetrics, designSize, base);
         }
-        // 适配部分 MIUI
         if (sMatchInfoOnMiui != null) {
             final DisplayMetrics displayMetricsOnMiui = getMetricsOnMiui(context.getResources());
             if (displayMetricsOnMiui != null) {
@@ -218,7 +214,7 @@ public final class ScreenAdapter {
         }
     }
 
-    private static void matchByDP(final MatchInfo matchInfo, final DisplayMetrics displayMetrics, final float designSize, final int base) {
+    private static void matchByDP(MatchInfo matchInfo, DisplayMetrics displayMetrics, float designSize, int base) {
         final float targetDensity;
         if (base == MATCH_BASE_WIDTH) {
             targetDensity = matchInfo.getScreenWidth() * 1f / designSize;
@@ -235,21 +231,20 @@ public final class ScreenAdapter {
     }
 
     /**
-     * 使用 pt 作为适配单位（因为 pt 比较冷门，新老项目皆适合使用；也可作为 dp 适配的补充，
-     * 在需要同时适配宽度和高度时，使用 pt 来适配 dp 未适配的宽度或高度）
-     * <br/>
-     * <p> pt 转 px 算法: pt * metrics.xdpi * (1.0f/72) </p>
+     * Use pt as the adaptation unit to adapt the screen
+     * <p>
+     * <p> Conversion between pt and px:
+     * pt * metrics.xdpi * (1.0f/72) </p>
      *
      * @param context
-     * @param designSize 设计图的宽/高（单位: pt）
-     * @param base       适配基准
+     * @param designSize
+     * @param base
      */
     private static void matchByPT(@NonNull final Context context, final float designSize, int base) {
         if (sMatchInfo != null) {
             final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             matchByPt(sMatchInfo, displayMetrics, designSize, base);
         }
-        // 适配部分 MIUI
         if (sMatchInfoOnMiui != null) {
             final DisplayMetrics displayMetricsOnMiui = getMetricsOnMiui(context.getResources());
             if (displayMetricsOnMiui != null) {
@@ -271,25 +266,26 @@ public final class ScreenAdapter {
     }
 
     /**
-     * 重置适配信息，取消适配
+     * Cancel the adaptation
+     *
+     * @param context
      */
-    public static void cancelMatch(@NonNull final Context context) {
+    public static void cancelMatch(@NonNull Context context) {
         cancelMatch(context, MATCH_UNIT_DP);
         cancelMatch(context, MATCH_UNIT_PT);
     }
 
     /**
-     * 重置适配信息，取消适配
+     * Cancel the adaptation
      *
      * @param context
-     * @param matchUnit 需要取消适配的单位
+     * @param matchUnit
      */
-    public static void cancelMatch(@NonNull final Context context, int matchUnit) {
+    public static void cancelMatch(@NonNull Context context, int matchUnit) {
         if (sMatchInfo != null) {
             final DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             cancelMatch(matchUnit, displayMetrics, sMatchInfo);
         }
-        // 适配部分 MIUI
         if (sMatchInfoOnMiui != null) {
             final DisplayMetrics displayMetricsOnMiui = getMetricsOnMiui(context.getResources());
             if (displayMetricsOnMiui != null) {
@@ -345,7 +341,7 @@ public final class ScreenAdapter {
     }
 
     /**
-     * 适配信息
+     * Adaptation information
      */
     public static class MatchInfo {
         private int screenWidth;

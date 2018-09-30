@@ -11,13 +11,9 @@ import java.io.IOException;
 /**
  * Base64 加密工具类
  * <p>
- * 参考链接：http://www.cnblogs.com/whoislcj/p/5887859.html
+ * {@see <a href="http://www.cnblogs.com/whoislcj/p/5887859.html">Base64</a>}
  */
-public final class Base64Util {
-
-    private Base64Util() {
-        throw new UnsupportedOperationException("cannot be instantiated");
-    }
+public class Base64Util {
 
     /**
      * base64 加密字符串
@@ -66,7 +62,7 @@ public final class Base64Util {
     }
 
     /**
-     * base64解密文件
+     * base64 解密文件
      *
      * @param ciphertext 密文
      * @param file       解码后的文件

@@ -13,13 +13,9 @@ import java.security.NoSuchAlgorithmException;
 /**
  * MD5加密工具类
  * <p>
- * 参考链接：http://www.cnblogs.com/whoislcj/p/5885006.html
+ * {@see <a href="http://www.cnblogs.com/whoislcj/p/5885006.html">MD5</a>}
  */
-public final class Md5Util {
-
-    private Md5Util() {
-        throw new UnsupportedOperationException("cannot be instantiated");
-    }
+public class Md5Util {
 
     /**
      * 计算字符串的 MD5 值
@@ -152,7 +148,7 @@ public final class Md5Util {
      * string + key（盐值 key）然后进行 MD5 加密
      *
      * @param string 需要加密的数据
-     * @param slat 盐
+     * @param slat   盐
      * @return 加密后的数据
      */
     public static String encrypt(String string, String slat) {

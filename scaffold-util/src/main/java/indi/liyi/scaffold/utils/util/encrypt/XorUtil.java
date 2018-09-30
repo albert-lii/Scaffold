@@ -7,13 +7,9 @@ package indi.liyi.scaffold.utils.util.encrypt;
  * 可用于 IM 二进制数据包加密，第一能够实现加密，第二采用异或加密算法不会改变二进制数据的长度这对二进制数据包封包起到不小的好处
  * 也可用于记事本等场景
  * <p>
- * 参考链接：http://www.cnblogs.com/whoislcj/p/5944917.html
+ * {@see <a href="http://www.cnblogs.com/whoislcj/p/5944917.html">XOR</a>}
  */
-public final class XorUtil {
-
-    private XorUtil() {
-        throw new UnsupportedOperationException("cannot be instantiated");
-    }
+public class XorUtil {
 
     /**
      * 固定 key 的方式加密
@@ -37,7 +33,6 @@ public final class XorUtil {
         }
         return bytes;
     }
-
 
     /**
      * 非固定 key 的方式加密

@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 
-public final class ShellUtil {
+public class ShellUtil {
     private static final String LINE_SEP = System.getProperty("line.separator");
 
     /**

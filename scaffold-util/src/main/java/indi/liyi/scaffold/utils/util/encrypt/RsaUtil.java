@@ -21,23 +21,19 @@ import javax.crypto.NoSuchPaddingException;
 /**
  * RSA 加密工具类（非对称加密）
  * <p>
- * 参考链接：http://www.cnblogs.com/whoislcj/p/5470095.html
+ * {@see <a href="http://www.cnblogs.com/whoislcj/p/5470095.html">RSA</a>}
  */
-public final class RsaUtil {
-    /* 非对称加密密钥算法 */
+public class RsaUtil {
+    // 非对称加密密钥算法
     private static final String RSA = "RSA";
-    /* 加密填充方式 */
+    // 加密填充方式
     private static final String ECB_PKCS1_PADDING = "RSA/ECB/PKCS1Padding";
-    /* 秘钥默认长度 */
+    // 秘钥默认长度
     private static final int DEFAULT_KEY_SIZE = 2048;
-    /* 当要加密的内容超过 bufferSize，则采用 partSplit 进行分块加密 */
+    // 当要加密的内容超过 bufferSize，则采用 partSplit 进行分块加密
     private static final byte[] DEFAULT_SPLIT = "#PART#".getBytes();
-    /* 当前秘钥支持加密的最大字节数 */
+    // 当前秘钥支持加密的最大字节数
     private static final int DEFAULT_BUFFERSIZE = (DEFAULT_KEY_SIZE / 8) - 11;
-
-    private RsaUtil() {
-        throw new UnsupportedOperationException("cannot be instantiated");
-    }
 
     /**
      * 随机生成 RSA 密钥对
@@ -55,7 +51,6 @@ public final class RsaUtil {
             return null;
         }
     }
-
 
     /**
      * 用公钥对字符串进行加密
@@ -90,7 +85,6 @@ public final class RsaUtil {
         return null;
     }
 
-
     /**
      * 私钥加密
      *
@@ -123,7 +117,6 @@ public final class RsaUtil {
         }
         return null;
     }
-
 
     /**
      * 公钥解密
@@ -158,7 +151,6 @@ public final class RsaUtil {
         return null;
     }
 
-
     /**
      * 使用私钥进行解密
      *
@@ -191,7 +183,6 @@ public final class RsaUtil {
         }
         return null;
     }
-
 
     /**
      * 用公钥对字符串进行分段加密
@@ -243,7 +234,6 @@ public final class RsaUtil {
         return bytes;
     }
 
-
     /**
      * 私钥分段加密
      *
@@ -290,7 +280,6 @@ public final class RsaUtil {
         }
         return bytes;
     }
-
 
     /**
      * 公钥分段解密
@@ -360,7 +349,6 @@ public final class RsaUtil {
         }
         return bytes;
     }
-
 
     /**
      * 使用私钥分段解密

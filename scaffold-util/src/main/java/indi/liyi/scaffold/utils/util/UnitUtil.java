@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.TypedValue;
 
 
-public class ConvertUtil {
+public class UnitUtil {
 
     /**
      * Value of dp to value of px

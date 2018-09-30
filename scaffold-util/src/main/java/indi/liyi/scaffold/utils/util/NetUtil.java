@@ -31,11 +31,11 @@ import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.MODIFY_PHONE_STATE;
 
 
-public final class NetUtil {
+public class NetUtil {
 
     /**
      * Return active network information
-     * <p>Require permission: <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /></p>
+     * <p>{@code <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />}</p>
      *
      * @return NetworkInfo
      */
@@ -57,7 +57,7 @@ public final class NetUtil {
 
     /**
      * Determine whether the network is available by Ping(Tip: Using Ping to judge will take long time)
-     * <p>Require permission: <uses-permission android:name="android.permission.INTERNET" /></p>
+     * <p>{@code <uses-permission android:name="android.permission.INTERNET" />}</p>
      * <p>Need to use ping in an asynchronous thread and if Ping does not work, the network is not available </p>
      * <p>The ip used here is Alibaba's public ip: 223.5.5.5 </p>
      *
@@ -70,7 +70,7 @@ public final class NetUtil {
 
     /**
      * Return whether the network is available by Ping(Tip: Using Ping to judge will take long time)
-     * <p>Require permission: <uses-permission android:name="android.permission.INTERNET" /></p>
+     * <p>{@code <uses-permission android:name="android.permission.INTERNET" />}</p>
      *
      * @param ip IP address(Own server ip). If the ip address is empty, use Alibaba's public ip.
      * @return {@code true}: available <br> {@code false}: unavailable
@@ -173,7 +173,7 @@ public final class NetUtil {
 
     /**
      * Set mobile data to open or close
-     * <p>Require permission: <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" /></p>
+     * <p>{@code <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />}</p>
      *
      * @param context
      * @param enabled {@code true}: enabled <br> {@code false}: disabled
@@ -193,7 +193,7 @@ public final class NetUtil {
 
     /**
      * Return whether using mobile data.
-     * <p>Require permission: <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /></p>
+     * <p>{@code <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />}</p>
      *
      * @param context
      * @return {@code true}: yes<br>{@code false}: no
@@ -285,7 +285,7 @@ public final class NetUtil {
 
     /**
      * Return the ip address
-     * <p>Require permission: <uses-permission android:name="android.permission.INTERNET" /></p>
+     * <p>{@code <uses-permission android:name="android.permission.INTERNET" />}</p>
      *
      * @param useIPv4 Whether to use ipv4
      * @return Ip address
@@ -328,7 +328,7 @@ public final class NetUtil {
 
     /**
      * Return ip address by wifi
-     * <p>Require permission: <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /></p>
+     * <p>{@code <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />}</p>
      *
      * @param context
      * @return Ip address
@@ -370,7 +370,7 @@ public final class NetUtil {
 
     /**
      * Return the ip address of the domain
-     * <p>Require permission: <uses-permission android:name="android.permission.INTERNET" /></p>
+     * <p>{@code <uses-permission android:name="android.permission.INTERNET" />}</p>
      *
      * @param domain The name of domain
      * @return Ip address
