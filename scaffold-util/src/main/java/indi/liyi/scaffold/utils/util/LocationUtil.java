@@ -7,7 +7,10 @@ import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
@@ -16,15 +19,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class LocationUtil {
     private static final String TAG = "Scaffold-" + LocationUtil.class.getSimpleName();
-    private static final int TWO_MINUTES = 1000 * 60 * 2;
+    private static final int TIME_LIMIT = 1000 * 60 * 2;
 
-    private static OnLocationChangeListener mListener;
-    private static MyLocationListener myLocationListener;
-    private static LocationManager mLocationManager;
+    private static LocationManager sLocationManager;
+    private static MyLocationListener sLocationListener;
+    private static OnLocationChangeListener sChangedListener;
+
 
     /**
      * Return whether the gps is enabled
@@ -60,64 +65,66 @@ public class LocationUtil {
     }
 
     /**
-     * 注册
-     * <p>使用完记得调用{@link #unregister()}</p>
-     * <p>需添加权限 {@code <uses-permission android:name="android.permission.INTERNET" />}</p>
-     * <p>需添加权限 {@code <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />}</p>
-     * <p>需添加权限 {@code <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />}</p>
-     * <p>如果{@code minDistance}为0，则通过{@code minTime}来定时更新；</p>
-     * <p>{@code minDistance}不为0，则以{@code minDistance}为准；</p>
-     * <p>两者都为0，则随时刷新。</p>
+     * Register location monitoring
+     * <p>Remember to call {@link #unregister()} after using</p>
+     * <p>{@code <uses-permission android:name="android.permission.INTERNET" />}</p>
+     * <p>{@code <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />}</p>
+     * <p>{@code <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />}</p>
+     * <p>If {@code minDistance} equals 0, update periodically by {@code minTime}</p>
+     * <p>If {@code minDistance} doesn't equal 0, take {@code minDistance} as the criterion</p>
+     * <p>If both {@code minTime} and {@code minDistance} are 0, update at any time.</p>
      *
-     * @param minTime     位置信息更新周期（单位：毫秒）
-     * @param minDistance 位置变化最小距离：当位置距离变化超过此值时，将更新位置信息（单位：米）
-     * @param listener    位置刷新的回调接口
-     * @return {@code true}: 初始化成功<br>{@code false}: 初始化失败
+     * @param context
+     * @param minTime     The update period of location information (Unit: milliseconds)
+     * @param minDistance The minimum distance of location change:
+     *                    The location information will be updated when the value of the location distance changes beyond the minDistance. (Unit: metre)
+     * @param listener    The callback interface for listening for location updates
+     * @return {@code true}: success <br> {@code false}: fail
      */
     @RequiresPermission(ACCESS_FINE_LOCATION)
     public static boolean register(@NonNull Context context, long minTime, long minDistance, OnLocationChangeListener listener) {
         if (listener == null) return false;
-        mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        //noinspection ConstantConditions
-        if (!mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-                && !mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            LogUtil.d("LocationUtil", "无法定位，请打开定位服务");
+        sLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        // noinspection ConstantConditions
+        if (!sLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                && !sLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            LogUtil.d(TAG, "无法定位，请打开定位服务");
             return false;
         }
-        mListener = listener;
-        String provider = mLocationManager.getBestProvider(getCriteria(), true);
-        Location location = mLocationManager.getLastKnownLocation(provider);
+        sChangedListener = listener;
+        String provider = sLocationManager.getBestProvider(getCriteria(), true);
+        Location location = sLocationManager.getLastKnownLocation(provider);
         if (location != null) listener.getLastKnownLocation(location);
-        if (myLocationListener == null) myLocationListener = new MyLocationListener();
-        mLocationManager.requestLocationUpdates(provider, minTime, minDistance, myLocationListener);
+        if (sLocationListener == null) sLocationListener = new MyLocationListener();
+        sLocationManager.requestLocationUpdates(provider, minTime, minDistance, sLocationListener);
         return true;
     }
 
     /**
-     * 注销
+     * Unregister location monitoring
      */
     @RequiresPermission(ACCESS_COARSE_LOCATION)
     public static void unregister() {
-        if (mLocationManager != null) {
-            if (myLocationListener != null) {
-                mLocationManager.removeUpdates(myLocationListener);
-                myLocationListener = null;
+        if (sLocationManager != null) {
+            if (sLocationListener != null) {
+                sLocationManager.removeUpdates(sLocationListener);
+                sLocationListener = null;
             }
-            mLocationManager = null;
+            sLocationManager = null;
         }
-        if (mListener != null) {
-            mListener = null;
+        if (sChangedListener != null) {
+            sChangedListener = null;
         }
     }
 
     /**
-     * 设置定位参数
+     * Return the location parameters
      *
      * @return {@link Criteria}
      */
     private static Criteria getCriteria() {
         Criteria criteria = new Criteria();
-        // 设置定位精确度 Criteria.ACCURACY_COARSE比较粗略，Criteria.ACCURACY_FINE则比较精细
+        // 设置定位精确度 Criteria.ACCURACY_COARSE 比较粗略，Criteria.ACCURACY_FINE 则比较精细
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
         // 设置是否要求速度
         criteria.setSpeedRequired(false);
@@ -133,14 +140,15 @@ public class LocationUtil {
     }
 
     /**
-     * 根据经纬度获取地理位置
+     * Return the geolocation by latitude and longitude
      *
-     * @param latitude  纬度
-     * @param longitude 经度
+     * @param context
+     * @param latitude
+     * @param longitude
      * @return {@link Address}
      */
-    public static Address getAddress(double latitude, double longitude) {
-        Geocoder geocoder = new Geocoder(Utils.getApp(), Locale.getDefault());
+    public static Address getAddress(@NonNull Context context, double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         try {
             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
             if (addresses.size() > 0) return addresses.get(0);
@@ -151,58 +159,64 @@ public class LocationUtil {
     }
 
     /**
-     * 根据经纬度获取所在国家
+     * Return the country name by latitude and longitude
      *
-     * @param latitude  纬度
-     * @param longitude 经度
-     * @return 所在国家
+     * @param latitude
+     * @param longitude
+     * @return the country name
      */
-    public static String getCountryName(double latitude, double longitude) {
-        Address address = getAddress(latitude, longitude);
+    public static String getCountryName(@NonNull Context context, double latitude, double longitude) {
+        Address address = getAddress(context, latitude, longitude);
         return address == null ? "unknown" : address.getCountryName();
     }
 
     /**
-     * 根据经纬度获取所在地
+     * Return the locality by latitude and longitude
      *
-     * @param latitude  纬度
-     * @param longitude 经度
-     * @return 所在地
+     * @param context
+     * @param latitude
+     * @param longitude
+     * @return the locality
      */
-    public static String getLocality(double latitude, double longitude) {
-        Address address = getAddress(latitude, longitude);
+    public static String getLocality(@NonNull Context context, double latitude, double longitude) {
+        Address address = getAddress(context, latitude, longitude);
         return address == null ? "unknown" : address.getLocality();
     }
 
     /**
-     * 根据经纬度获取所在街道
+     * Return the street name by latitude and longitude
      *
-     * @param latitude  纬度
-     * @param longitude 经度
-     * @return 所在街道
+     * @param context
+     * @param latitude
+     * @param longitude
+     * @return the street name
      */
-    public static String getStreet(double latitude, double longitude) {
-        Address address = getAddress(latitude, longitude);
+    public static String getStreet(@NonNull Context context, double latitude, double longitude) {
+        Address address = getAddress(context, latitude, longitude);
         return address == null ? "unknown" : address.getAddressLine(0);
     }
 
     /**
-     * 是否更好的位置
+     * Return whether it is a better location
      *
      * @param newLocation         The new Location that you want to evaluate
      * @param currentBestLocation The current Location fix, to which you want to compare the new one
-     * @return {@code true}: 是<br>{@code false}: 否
+     * @return {@code true}: yes <br> {@code false}: no
      */
     public static boolean isBetterLocation(Location newLocation, Location currentBestLocation) {
-        if (currentBestLocation == null) {
+        if (newLocation != null && currentBestLocation == null) {
             // A new location is always better than no location
             return true;
+        } else if (newLocation == null && currentBestLocation != null) {
+            return false;
+        } else if (newLocation == null && currentBestLocation == null) {
+            return false;
         }
 
         // Check whether the new location fix is newer or older
         long timeDelta = newLocation.getTime() - currentBestLocation.getTime();
-        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
-        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+        boolean isSignificantlyNewer = timeDelta > TIME_LIMIT;
+        boolean isSignificantlyOlder = timeDelta < -TIME_LIMIT;
         boolean isNewer = timeDelta > 0;
 
         // If it's been more than two minutes since the current location, use the new location
@@ -235,35 +249,35 @@ public class LocationUtil {
     }
 
     /**
-     * 是否相同的提供者
+     * Returns whether they are the same provider
      *
-     * @param provider0 提供者1
-     * @param provider1 提供者2
-     * @return {@code true}: 是<br>{@code false}: 否
+     * @param provider1
+     * @param provider2
+     * @return {@code true}: yes <br> {@code false}: false
      */
-    public static boolean isSameProvider(String provider0, String provider1) {
-        if (provider0 == null) {
-            return provider1 == null;
+    public static boolean isSameProvider(String provider1, String provider2) {
+        if (provider1 == null) {
+            return provider2 == null;
         }
-        return provider0.equals(provider1);
+        return provider1.equals(provider2);
     }
 
-    private static class MyLocationListener
-            implements LocationListener {
+    private static class MyLocationListener implements LocationListener {
         /**
-         * 当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
+         * Trigger this function when the coordinates change,
+         * and if the provider passes in the same coordinates, it will not be triggered
          *
-         * @param location 坐标
+         * @param location
          */
         @Override
         public void onLocationChanged(Location location) {
-            if (mListener != null) {
-                mListener.onLocationChanged(location);
+            if (sChangedListener != null) {
+                sChangedListener.onLocationChanged(location);
             }
         }
 
         /**
-         * provider的在可用、暂时不可用和无服务三个状态直接切换时触发此函数
+         * provider 的可用、暂时不可用和无服务三个状态直接切换时触发此函数
          *
          * @param provider 提供者
          * @param status   状态
@@ -271,31 +285,31 @@ public class LocationUtil {
          */
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            if (mListener != null) {
-                mListener.onStatusChanged(provider, status, extras);
+            if (sChangedListener != null) {
+                sChangedListener.onStatusChanged(provider, status, extras);
             }
             switch (status) {
                 case LocationProvider.AVAILABLE:
-                    Log.d("LocationUtils", "当前GPS状态为可见状态");
+                    LogUtil.d(TAG, "当前GPS状态为可见状态");
                     break;
                 case LocationProvider.OUT_OF_SERVICE:
-                    Log.d("LocationUtils", "当前GPS状态为服务区外状态");
+                    LogUtil.d(TAG, "当前GPS状态为服务区外状态");
                     break;
                 case LocationProvider.TEMPORARILY_UNAVAILABLE:
-                    Log.d("LocationUtils", "当前GPS状态为暂停服务状态");
+                    LogUtil.d(TAG, "当前GPS状态为暂停服务状态");
                     break;
             }
         }
 
         /**
-         * provider被enable时触发此函数，比如GPS被打开
+         * provider 被 enable 时触发此函数，比如 GPS 被打开
          */
         @Override
         public void onProviderEnabled(String provider) {
         }
 
         /**
-         * provider被disable时触发此函数，比如GPS被关闭
+         * provider 被 disable 时触发此函数，比如 GPS 被关闭
          */
         @Override
         public void onProviderDisabled(String provider) {
@@ -312,19 +326,19 @@ public class LocationUtil {
         void getLastKnownLocation(Location location);
 
         /**
-         * 当坐标改变时触发此函数，如果Provider传进相同的坐标，它就不会被触发
+         * 当坐标改变时触发此函数，如果 Provider 传进相同的坐标，它就不会被触发
          *
          * @param location 坐标
          */
         void onLocationChanged(Location location);
 
         /**
-         * provider的在可用、暂时不可用和无服务三个状态直接切换时触发此函数
+         * provider的 可用、暂时不可用和无服务三个状态直接切换时触发此函数
          *
          * @param provider 提供者
          * @param status   状态
          * @param extras   provider可选包
          */
-        void onStatusChanged(String provider, int status, Bundle extras);//位置状态发生改变
+        void onStatusChanged(String provider, int status, Bundle extras);// 位置状态发生改变
     }
 }
