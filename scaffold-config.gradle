@@ -1,0 +1,8 @@
+ext {
+    android = [
+            lib_compile_sdk_version: 27,
+            lib_min_sdk_version    : 14,
+            lib_target_sdk_version : 27,
+            lib_support_version    : "27.1.1",
+    ]
+}

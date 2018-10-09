@@ -1,5 +1,6 @@
-include ':app', ':scaffold-http',
-        ':lib_common',':lib_core', ':lib_x',
+include ':app', ':scaffold-mvvm', ':scaffold-mvp',
+        ':lib_common',':lib_x',
+        ':scaffold-http',
         ':scaffold-ui',
         ':scaffold-util'
 
