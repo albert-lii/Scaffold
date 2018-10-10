@@ -1,4 +1,4 @@
-package indi.liyi.common.utils;
+package indi.liyi.lib.common.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Application;

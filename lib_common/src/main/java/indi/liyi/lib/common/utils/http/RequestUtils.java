@@ -1,4 +1,4 @@
-package indi.liyi.common.utils.http;
+package indi.liyi.lib.common.utils.http;
 
 import indi.liyi.scaffold.http.request.RequestUtil;
 

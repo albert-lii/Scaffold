@@ -2,7 +2,7 @@ package indi.liyi.module.login
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import indi.liyi.common.mvvm.BaseActivity
+import indi.liyi.lib.common.mvvm.BaseActivity
 import kotlinx.android.synthetic.main.aty_login.*
 
 class LoginAty : BaseActivity() {

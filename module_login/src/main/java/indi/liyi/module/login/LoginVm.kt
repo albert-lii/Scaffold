@@ -1,7 +1,7 @@
 package indi.liyi.module.login
 
 import android.arch.lifecycle.MutableLiveData
-import indi.liyi.common.mvvm.BaseViewModelNet
+import indi.liyi.lib.common.mvvm.BaseViewModelNet
 import indi.liyi.scaffold.http.exception.HttpFailure
 import org.json.JSONObject
 

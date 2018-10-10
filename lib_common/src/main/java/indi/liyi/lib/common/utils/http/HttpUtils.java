@@ -1,9 +1,9 @@
-package indi.liyi.common.utils.http;
+package indi.liyi.lib.common.utils.http;
 
 import android.support.annotation.NonNull;
 
-import indi.liyi.common.constant.ApiService;
-import indi.liyi.common.utils.Utils;
+import indi.liyi.lib.common.constant.ApiService;
+import indi.liyi.lib.common.utils.Utils;
 
 import indi.liyi.scaffold.http.HttpServer;
 import io.reactivex.Observable;

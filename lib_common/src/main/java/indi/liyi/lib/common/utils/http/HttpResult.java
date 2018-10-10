@@ -1,4 +1,4 @@
-package indi.liyi.common.utils.http;
+package indi.liyi.lib.common.utils.http;
 
 /**
  * 网络请求数据返回类

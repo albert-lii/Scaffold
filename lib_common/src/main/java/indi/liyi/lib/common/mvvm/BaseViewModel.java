@@ -1,4 +1,4 @@
-package indi.liyi.common.mvvm;
+package indi.liyi.lib.common.mvvm;
 
 import android.arch.lifecycle.ViewModel;
 

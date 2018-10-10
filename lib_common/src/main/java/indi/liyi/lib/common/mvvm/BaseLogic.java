@@ -1,8 +1,8 @@
-package indi.liyi.common.mvvm;
+package indi.liyi.lib.common.mvvm;
 
-import indi.liyi.common.utils.http.ApiResponse;
-import indi.liyi.common.utils.http.HttpCallback;
-import indi.liyi.common.utils.http.HttpUtils;
+import indi.liyi.lib.common.utils.http.ApiResponse;
+import indi.liyi.lib.common.utils.http.HttpCallback;
+import indi.liyi.lib.common.utils.http.HttpUtils;
 import io.reactivex.Observable;
 
 

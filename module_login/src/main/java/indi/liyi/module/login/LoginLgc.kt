@@ -1,7 +1,7 @@
 package indi.liyi.module.login
 
 import android.text.TextUtils
-import indi.liyi.common.utils.http.HttpCallback
+import indi.liyi.lib.common.utils.http.HttpCallback
 import org.json.JSONObject
 
 class LoginLgc {
