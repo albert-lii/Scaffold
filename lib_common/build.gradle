@@ -40,8 +40,8 @@ dependencies {
     implementation rootProject.ext.dependencies.okhttp
     implementation rootProject.ext.dependencies.rxjava
     implementation rootProject.ext.dependencies.rxandroid
-    api project(':scaffold-http')
-    api project(':scaffold-mvvm')
-    api project(':scaffold-ui')
-    api project(':scaffold-util')
+    implementation project(':scaffold-http')
+    implementation project(':scaffold-mvvm')
+    implementation project(':scaffold-ui')
+    implementation project(':scaffold-util')
 }
