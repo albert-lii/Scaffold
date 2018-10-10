@@ -3,7 +3,6 @@ apply plugin: 'com.android.library'
 def compile_sdk_version = rootProject.ext.android.lib_compile_sdk_version
 def min_sdk_version = rootProject.ext.android.lib_min_sdk_version
 def target_sdk_version = rootProject.ext.android.lib_target_sdk_version
-def support_version = rootProject.ext.android.lib_support_version
 def version_code = 1
 def version_name = "0.0.1"
 
@@ -25,7 +24,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {

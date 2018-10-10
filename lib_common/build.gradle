@@ -33,15 +33,15 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    implementation rootProject.ext.dependencies.appcompat_v7
-    implementation rootProject.ext.dependencies.retrofit
-    implementation rootProject.ext.dependencies.retrofit_gson
-    implementation rootProject.ext.dependencies.retrofit_adapter_rxjava
-    implementation rootProject.ext.dependencies.okhttp
-    implementation rootProject.ext.dependencies.rxjava
-    implementation rootProject.ext.dependencies.rxandroid
-    implementation project(':scaffold-http')
-    implementation project(':scaffold-mvvm')
-    implementation project(':scaffold-ui')
-    implementation project(':scaffold-util')
+    api rootProject.ext.dependencies.appcompat_v7
+    api rootProject.ext.dependencies.retrofit
+    api rootProject.ext.dependencies.retrofit_gson
+    api rootProject.ext.dependencies.retrofit_adapter_rxjava
+    api rootProject.ext.dependencies.okhttp
+    api rootProject.ext.dependencies.rxjava
+    api rootProject.ext.dependencies.rxandroid
+    api project(':scaffold-http')
+    api project(':scaffold-mvvm')
+    api project(':scaffold-ui')
+    api project(':scaffold-util')
 }
