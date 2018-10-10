@@ -1,7 +1,7 @@
 package indi.liyi.scaffold.http.response;
 
 
-import com.liyi.xlib.util.http.CallServer;
+import indi.liyi.scaffold.http.HttpServer;
 
 /**
  * Retrofit2.0 中的下载请求响应基类
@@ -18,7 +18,7 @@ public class HttpDownloadResponse<T> extends HttpResponse<T> {
         super(listener);
         this.mProgressListener = progressListener;
         if (mProgressListener != null) {
-            CallServer.getInstance().addDownloadProgressListener(listenerTag, progressListener);
+            HttpServer.getInstance().addDownloadProgressListener(listenerTag, progressListener);
         }
     }
 }

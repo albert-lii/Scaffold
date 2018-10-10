@@ -2,16 +2,16 @@
 apply from: "scaffold-config.gradle"
 
 buildscript {
+    ext.kotlin_version = '1.2.50'
 
     repositories {
         google()
         jcenter()
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.4'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -24,13 +24,4 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-
-ext {
-    compile_sdk_version = 27
-    min_sdk_version = 19
-    target_sdk_version = 27
-    support_version = "27.1.1"
-    version_code = 1
-    version_name = "1.0.0"
 }

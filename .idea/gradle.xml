@@ -10,7 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/lib_common" />
-            <option value="$PROJECT_DIR$/lib_x" />
+            <option value="$PROJECT_DIR$/module_login" />
             <option value="$PROJECT_DIR$/scaffold-http" />
             <option value="$PROJECT_DIR$/scaffold-mvp" />
             <option value="$PROJECT_DIR$/scaffold-mvvm" />

@@ -6,7 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.liyi.sample.mvvm.LoginAty;
-import com.liyi.xlib.util.ScreenAdapter;
+
+import indi.liyi.scaffold.utils.util.ScreenAdapter;
 
 public class MainActivity extends AppCompatActivity {
 

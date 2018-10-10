@@ -1,9 +1,9 @@
 apply plugin: 'com.android.library'
 
-def compile_sdk_version = rootProject.ext.compile_sdk_version
-def min_sdk_version = rootProject.ext.min_sdk_version
-def target_sdk_version = rootProject.ext.target_sdk_version
-def support_version = rootProject.ext.support_version
+def compile_sdk_version = rootProject.ext.android.lib_compile_sdk_version
+def min_sdk_version = rootProject.ext.android.lib_min_sdk_version
+def target_sdk_version = rootProject.ext.android.lib_target_sdk_version
+def support_version = rootProject.ext.android.lib_support_version
 def version_code = 1
 def version_name = "1.0.0"
 
@@ -11,7 +11,7 @@ android {
     compileSdkVersion compile_sdk_version
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
         versionCode version_code
         versionName version_name
@@ -33,5 +33,15 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    api project(':lib_x')
+    implementation rootProject.ext.dependencies.appcompat_v7
+    implementation rootProject.ext.dependencies.retrofit
+    implementation rootProject.ext.dependencies.retrofit_gson
+    implementation rootProject.ext.dependencies.retrofit_adapter_rxjava
+    implementation rootProject.ext.dependencies.okhttp
+    implementation rootProject.ext.dependencies.rxjava
+    implementation rootProject.ext.dependencies.rxandroid
+    api project(':scaffold-http')
+    api project(':scaffold-mvvm')
+    api project(':scaffold-ui')
+    api project(':scaffold-util')
 }

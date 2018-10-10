@@ -1,15 +1,24 @@
 apply plugin: 'com.android.application'
 
+def compile_sdk_version = rootProject.ext.android.compile_sdk_version
+def min_sdk_version = rootProject.ext.android.min_sdk_version
+def target_sdk_version = rootProject.ext.android.target_sdk_version
+def support_version = rootProject.ext.android.support_version
+def version_code = 1
+def version_name = "0.0.1"
+
 android {
-    compileSdkVersion 27
+    compileSdkVersion compile_sdk_version
+
     defaultConfig {
         applicationId "com.liyi.sample"
-        minSdkVersion 14
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode version_code
+        versionName version_name
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -20,10 +29,12 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation rootProject.ext.dependencies.kotlin_stdlib
+    implementation rootProject.ext.dependencies.appcompat_v7
+    implementation rootProject.ext.dependencies.lifecycle
     implementation project(':lib_common')
 }

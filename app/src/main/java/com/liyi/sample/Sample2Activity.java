@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.liyi.xlib.util.ScreenAdapter;
 
 public class Sample2Activity extends Activity{
 

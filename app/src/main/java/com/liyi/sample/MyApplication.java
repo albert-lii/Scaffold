@@ -2,7 +2,8 @@ package com.liyi.sample;
 
 import android.app.Application;
 
-import com.liyi.xlib.util.ScreenAdapter;
+import indi.liyi.scaffold.utils.util.ScreenAdapter;
+
 
 public class MyApplication extends Application {
 

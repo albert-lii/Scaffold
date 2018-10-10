@@ -1,8 +1,39 @@
 ext {
     android = [
+            compile_sdk_version    : 27,
+            min_sdk_version        : 14,
+            target_sdk_version     : 27,
+            support_version        : "27.1.1",
+
             lib_compile_sdk_version: 27,
             lib_min_sdk_version    : 14,
             lib_target_sdk_version : 27,
-            lib_support_version    : "27.1.1",
+            lib_support_version    : "27.1.1"
+    ]
+
+    dependencies = [
+            // kotlin
+            kotlin_stdlib          : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version",
+            // common
+            appcompat_v7           : "com.android.support:appcompat-v7:$rootProject.ext.android.lib_support_version",
+            recyclerview           : "com.android.support:recyclerview-v7:$rootProject.ext.android.lib_support_version",
+            // eventbus
+            eventbus               : 'org.greenrobot:eventbus:3.1.1',
+            // retrofit
+            retrofit               : 'com.squareup.retrofit2:retrofit:2.4.0',
+            retrofit_gson          : 'com.squareup.retrofit2:converter-gson:2.4.0',
+            retrofit_string        : 'com.squareup.retrofit2:converter-scalars:2.4.0',
+            retrofit_adapter_rxjava: 'com.squareup.retrofit2:adapter-rxjava2:2.4.0',
+            okhttp                 : 'com.squareup.okhttp3:okhttp:3.10.0',
+            // rxjava
+            rxjava                 : 'io.reactivex.rxjava2:rxjava:2.1.12',
+            rxandroid              : 'io.reactivex.rxjava2:rxandroid:2.0.2',
+            // gson
+            gson                   : 'com.google.code.gson:gson:2.8.5',
+            // mvvm
+            lifecycle              : "android.arch.lifecycle:extensions:1.1.0",
+            // butterknife
+            butterknife            : 'com.jakewharton:butterknife:8.8.1',
+            butterknife_compiler   : 'com.jakewharton:butterknife-compiler:8.8.1' // annotationProcessor
     ]
 }

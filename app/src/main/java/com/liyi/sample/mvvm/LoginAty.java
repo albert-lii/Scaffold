@@ -11,7 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.liyi.sample.R;
-import com.liyi.xlib.util.ScreenAdapter;
+
+import indi.liyi.scaffold.utils.util.ScreenAdapter;
 
 public class LoginAty extends FragmentActivity {
     private EditText et_phoneNo, et_password;
